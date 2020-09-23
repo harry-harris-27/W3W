@@ -124,13 +124,13 @@ namespace W3W
                     throw error.AsException();
 
                 case HttpStatusCode.Unauthorized:
-                    throw new UnauthorizedAccessException("Invalid API Key");
+                    throw new What3WordsException("Invalid API Key");
 
                 case HttpStatusCode.NotFound:
-                    throw new InvalidOperationException("URL not found, Check the URL of the endpoint your're trying to reach.");
+                    throw new What3WordsException("URL not found, Check the URL of the endpoint your're trying to reach.");
 
                 case HttpStatusCode.MethodNotAllowed:
-                    throw new InvalidOperationException("Method not allowed. You must use a GET request.");
+                    throw new What3WordsException("Method not allowed. You must use a GET request.");
 
                 default:
                     throw new Exception(responseMessage.ReasonPhrase + ": " + content);
