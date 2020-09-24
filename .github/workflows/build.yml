@@ -19,7 +19,15 @@ jobs:
         dotnet-version: 3.1.301
     - name: Install dependencies
       run: dotnet restore
+    
     - name: Build
       run: dotnet build --configuration Release --no-restore
+    
+    - shell: bash
+      name: Set API key user secret
+      env:
+        API_KEY: ${{ secrets.WHAT3WORDS_API_KEY }}
+      run: dotnet user-secrets set what3wordsApiKey "$API_KEY"
+      
     - name: Test
       run: dotnet test --no-restore --verbosity normal
