@@ -15,7 +15,7 @@ namespace W3W
         }
 
 
-        public LatLng Centre { get; set; } = new LatLng();
+        public LatLng Centre { get; set; } = new LatLng(0, 0);
 
         /// <summary>
         /// Gets or sets the radius or this circle, expressed in km.
