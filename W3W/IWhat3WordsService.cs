@@ -7,6 +7,16 @@ namespace W3W
 {
     public interface IWhat3WordsService
     {
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the results of API queries should be cached.
+        /// </summary>
+        /// <remarks>
+        /// The can be a useful techinque to reduce the number of quoted API results and increase performance.
+        /// </remarks>
+        bool CacheResults { get; set; }
+
+
         /// <summary>
         /// Converts the specified latitude and longitude to a 3-word address, in the specified language.
         /// </summary>

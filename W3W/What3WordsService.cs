@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -15,7 +17,11 @@ namespace W3W
 
         private const string API_BASE_URL = "https://api.what3words.com/v3/";
 
+        private readonly IDictionary<string, object> cache = new ConcurrentDictionary<string, object>();
+
         private readonly HttpClient httpClient;
+
+        private bool cacheResults = true;
 
 
         /// <summary>
@@ -43,6 +49,25 @@ namespace W3W
             httpClient.DefaultRequestHeaders.Add("X-Api-Key", apiKey);
         }
 
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the results of API queries should be cached.
+        /// </summary>
+        /// <remarks>
+        /// The can be a useful techinque to reduce the number of quoted API results and increase performance.
+        /// </remarks>
+        public bool CacheResults
+        {
+            get => cacheResults;
+            set
+            {
+                cacheResults = value;
+                if (!cacheResults)
+                {
+                    cache.Clear();
+                }
+            }
+        }
 
         /// <inheritdoc/>
         public Task<What3WordsConversion> ConvertAsync(double latitude, double longitude, string language)
@@ -102,6 +127,13 @@ namespace W3W
                 url += "?" + string.Join("&", parameters.Select(kvp => $"{ WebUtility.UrlEncode(kvp.Key) }={ WebUtility.UrlEncode(kvp.Value) }"));
             }
 
+            // If caching results, check is we have already requested this url
+            if (CacheResults && cache.TryGetValue(url, out object cachedResponse))
+            {
+                return (T)cachedResponse;
+            }
+
+            // Execute the GET request from the API
             var response = await httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
@@ -109,8 +141,17 @@ namespace W3W
                 await HandleUnsuccessfulResponse(response);
             }
 
+            // Deserialize the content of the response
             string json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(json);
+            T content = JsonConvert.DeserializeObject<T>(json);
+
+            // If using the cache, add the response to it
+            if (CacheResults)
+            {
+                cache.Add(url, content);
+            }
+
+            return content;
         }
 
         private static async Task HandleUnsuccessfulResponse(HttpResponseMessage responseMessage)
