@@ -27,7 +27,7 @@ jobs:
       name: Set API key user secret
       env:
         API_KEY: ${{ secrets.WHAT3WORDS_API_KEY }}
-      run: dotnet user-secrets set what3wordsApiKey "$API_KEY"
+      run: dotnet user-secrets set what3wordsApiKey "$API_KEY" --project W3W.Tests --id w3w-tests-FC1D9449-0A3E-4278-96B9-31A5FFE41F7F
       
     - name: Test
       run: dotnet test --no-restore --verbosity normal
