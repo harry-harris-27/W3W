@@ -15,7 +15,7 @@ See the what3words public API [documentation](https://docs.what3words.com/api/v3
 IWhat3WordsService what3wordsService = new What3WordsService("your-api-key-here");
 
 // It is also possible to pass custom URLs to the What3WordsService to allow for access to your 
-// if you run the what3words Enterprise Suite API Server yourself.
+// servers, if you run the what3words Enterprise Suite API Server yourself.
 //IWhat3WordsService what3wordsService = new What3WordsService("your-api-key-here", "your-enterprise-suite-server-url-here");
 
 try
